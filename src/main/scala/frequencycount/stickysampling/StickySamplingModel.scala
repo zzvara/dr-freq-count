@@ -35,7 +35,7 @@ class StickySamplingModel[T](val frequency: Double,
   val INITIAL_SAMPLING_RATE = 1
   var samplingRate = INITIAL_SAMPLING_RATE
 
-  def process(dataStream: List[T]): StickySamplingModel[T] = {
+  def process(dataStream: Iterator[T]): StickySamplingModel[T] = {
 
     dataStream.foreach { item =>
       totalProcessedElements += 1
@@ -129,7 +129,7 @@ object StickySamplingModel{
       val model = new StickySamplingModel[String](frequency, error, probabilityOfFailure)
       println(s"Frequency: $frequency, Error: $error Probability of failure: $probabilityOfFailure")
       for (i <- itemBatches.indices) {
-        model.process(itemBatches(i))
+        model.process(itemBatches(i).iterator)
         model.computeOutput().foreach(pair => println(pair))
         println("=============")
         Thread.sleep(1000L)

@@ -16,7 +16,7 @@ class LossyCountingModel[T](
   private val map = mutable.HashMap.empty[T, Int]
 
 
-  def process(dataWindow: List[T]): LossyCountingModel[T] = {
+  def process(dataWindow: Iterator[T]): LossyCountingModel[T] = {
     dataWindow.foreach { item =>
       totalProcessedElements += 1
       incrCount(item)
@@ -76,7 +76,7 @@ object LossyCountingModel {
     val model = new LossyCountingModel[String](frequency, error)
     println(s"Frequency: $frequency, Error: $error Window count: ${1.0/error}")
     for (i <- itemBatches.indices) {
-      model.process(itemBatches(i))
+      model.process(itemBatches(i).iterator)
       model.computeOutput().foreach(pair => println(pair))
       println("=============")
       Thread.sleep(1000L)
