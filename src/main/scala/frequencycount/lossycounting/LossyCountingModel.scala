@@ -1,15 +1,12 @@
 package frequencycount.lossycounting
 
 import frequencycount.{Item, FrequencyCount}
-import utils.Utils._
+import utils.Utils
 
 import scala.collection.mutable
 
-
-class LossyCountingModel[T](
-                             val frequency: Double,
-                             val error: Double
-                             ) extends FrequencyCount[T] {
+class LossyCountingModel[T](val frequency: Double,
+                            val error: Double) extends FrequencyCount[T] {
 
   private var totalProcessedElements = 0L
 
@@ -66,11 +63,11 @@ object LossyCountingModel {
     val error = 0.1 * frequency
 
     val itemBatches = List(
-      List.concat(create(19, Item.Red), create(11, Item.Blue), create(10, Item.Yellow), create(10, Item.Brown), create(0, Item.Green)),
-      List.concat(create(30, Item.Red), create(10, Item.Blue), create(10, Item.Yellow)),
-      List.concat(create(30, Item.Red), create(10, Item.Blue), create(0, Item.Yellow), create(5, Item.Brown), create(5, Item.Green)),
-      List.concat(create(40, Item.Red), create(10, Item.Blue)),
-      List.concat(create(40, Item.Red), create(10, Item.Blue))
+      List.concat(Utils.create(19, Item.Red), Utils.create(11, Item.Blue), Utils.create(10, Item.Yellow), Utils.create(10, Item.Brown), Utils.create(0, Item.Green)),
+      List.concat(Utils.create(30, Item.Red), Utils.create(10, Item.Blue), Utils.create(10, Item.Yellow)),
+      List.concat(Utils.create(30, Item.Red), Utils.create(10, Item.Blue), Utils.create(0, Item.Yellow), Utils.create(5, Item.Brown), Utils.create(5, Item.Green)),
+      List.concat(Utils.create(40, Item.Red), Utils.create(10, Item.Blue)),
+      List.concat(Utils.create(40, Item.Red), Utils.create(10, Item.Blue))
     )
 
     val model = new LossyCountingModel[String](frequency, error)

@@ -7,8 +7,8 @@ import utils.Utils._
 import testutils.TestUtils._
 
 class LossyCountingModelSpec extends UnitSpec{
-  val frequency = 0.2
-  val error = 0.1 * frequency
+  val frequency: Double = 0.2
+  val error: Double = 0.1 * frequency
 
   "Lossy Counting" should "count correct values per batch" in {
     val lossyCounting = new LossyCountingModel[String](frequency, error)

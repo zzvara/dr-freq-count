@@ -2,7 +2,7 @@ package frequencycount.stickysampling
 
 import frequencycount.{Item, FrequencyCount}
 import utils.RandomNumberGenerator
-import utils.Utils._
+import utils.Utils
 
 import scala.collection.immutable.HashMap
 import scala.collection.mutable
@@ -30,10 +30,10 @@ class StickySamplingModel[T](val frequency: Double,
   /**
    * The first t elements are sampled at rate r=1, the next 2t are sampled at rate r=2, the next 4t at r=4 and so on
    */
-  val t = (1.0 / error) * Math.log(1.0 / (frequency * probabilityOfFailure))
+  val t: Double = (1.0 / error) * Math.log(1.0 / (frequency * probabilityOfFailure))
 
   val INITIAL_SAMPLING_RATE = 1
-  var samplingRate = INITIAL_SAMPLING_RATE
+  var samplingRate: Int = INITIAL_SAMPLING_RATE
 
   def process(dataStream: Iterator[T]): StickySamplingModel[T] = {
 
@@ -67,7 +67,7 @@ class StickySamplingModel[T](val frequency: Double,
   }
 
   private def canSelectItWithSamplingRate(samplingRate: Int): Boolean = {
-    rng.getNextDouble() < (1.0 / samplingRate)
+    rng.getNextDouble < (1.0 / samplingRate)
   }
 
   private def decreaseAllEntriesByCoinToss(samplingRate: Int): Unit = {
@@ -88,7 +88,7 @@ class StickySamplingModel[T](val frequency: Double,
   }
 
   private def unsuccessfulCoinToss(): Boolean = {
-    rng.getNextDouble() > 0.5
+    rng.getNextDouble > 0.5
   }
 
   def computeOutput(): Array[(T, Int)] = {
@@ -105,7 +105,7 @@ class StickySamplingModel[T](val frequency: Double,
   }
 
   //used for testing
-  def getMap(): mutable.HashMap[T, Int] ={
+  def getMap: mutable.HashMap[T, Int] ={
     map
   }
 
@@ -119,11 +119,11 @@ object StickySamplingModel{
     val probabilityOfFailure = 0.1 * error
 
       val itemBatches = List(
-        List.concat(create(19, Item.Red), create(11, Item.Blue), create(10, Item.Yellow), create(10, Item.Brown), create(0, Item.Green)),
-        List.concat(create(30, Item.Red), create(10, Item.Blue), create(10, Item.Yellow)),
-        List.concat(create(30, Item.Red), create(10, Item.Blue), create(0, Item.Yellow), create(5, Item.Brown), create(5, Item.Green)),
-        List.concat(create(40, Item.Red), create(10, Item.Blue)),
-        List.concat(create(40, Item.Red), create(10, Item.Blue))
+        List.concat(Utils.create(19, Item.Red), Utils.create(11, Item.Blue), Utils.create(10, Item.Yellow), Utils.create(10, Item.Brown), Utils.create(0, Item.Green)),
+        List.concat(Utils.create(30, Item.Red), Utils.create(10, Item.Blue), Utils.create(10, Item.Yellow)),
+        List.concat(Utils.create(30, Item.Red), Utils.create(10, Item.Blue), Utils.create(0, Item.Yellow), Utils.create(5, Item.Brown), Utils.create(5, Item.Green)),
+        List.concat(Utils.create(40, Item.Red), Utils.create(10, Item.Blue)),
+        List.concat(Utils.create(40, Item.Red), Utils.create(10, Item.Blue))
       )
 
       val model = new StickySamplingModel[String](frequency, error, probabilityOfFailure)

@@ -3,11 +3,11 @@ package stickysampling
 import frequencycount.Item
 import frequencycount.stickysampling.StickySamplingModel
 import org.scalatestplus.mockito.MockitoSugar
-import testutils.TestUtils._
 import unitspec.UnitSpec
 import utils.RandomNumberGenerator
-import utils.Utils._
-import org.mockito.Mockito._
+import utils.Utils
+import org.mockito.Mockito
+import testutils.TestUtils
 
 class StickySamplingModelSpec extends UnitSpec with MockitoSugar {
 
@@ -21,15 +21,22 @@ class StickySamplingModelSpec extends UnitSpec with MockitoSugar {
     //t = 119
     val t = (1.0 / error) * Math.log(1.0 / (frequency * probabilityOfFailure))
 
-    val incomingStream = List.concat(create(19, Item.Red), create(11, Item.Blue), create(10, Item.Yellow), create(10, Item.Brown), create(0, Item.Green))
+    val incomingStream = List.concat(
+      Utils.create(19, Item.Red),
+      Utils.create(11, Item.Blue),
+      Utils.create(10, Item.Yellow),
+      Utils.create(10, Item.Brown),
+      Utils.create(0, Item.Green)
+    )
+
     val step0 = model.process(incomingStream.iterator)
 
 
-    assert(step0.getMap().get(Item.Red.toString).get === 19)
-    assert(step0.getMap().get(Item.Blue.toString).get === 11)
-    assert(step0.getMap().get(Item.Yellow.toString).get === 10)
-    assert(step0.getMap().get(Item.Brown.toString).get === 10)
-    assert(step0.getMap().get(Item.Green.toString) === None)
+    assert(step0.getMap(Item.Red.toString) === 19)
+    assert(step0.getMap(Item.Blue.toString) === 11)
+    assert(step0.getMap(Item.Yellow.toString) === 10)
+    assert(step0.getMap(Item.Brown.toString) === 10)
+    assert(step0.getMap.get(Item.Green.toString) === None)
   }
 
   it should "give correct output for elements with frequency below, in false-positive range and above the set frequency" in {
@@ -42,7 +49,13 @@ class StickySamplingModelSpec extends UnitSpec with MockitoSugar {
     //yellow freq = 18 / 100 Pass
     //brown freq = 8/100 Fail
     //green freq = 0/100 Fail
-    val stream = List.concat(create(47, Item.Red), create(19, Item.Blue), create(18, Item.Yellow), create(8, Item.Brown), create(0, Item.Green))
+    val stream = List.concat(
+      Utils.create(47, Item.Red),
+      Utils.create(19, Item.Blue),
+      Utils.create(18, Item.Yellow),
+      Utils.create(8, Item.Brown),
+      Utils.create(0, Item.Green)
+    )
 
     val model = new StickySamplingModel[String](frequency, error, probabilityOfFailure)
     model.process(stream.iterator)
@@ -50,9 +63,9 @@ class StickySamplingModelSpec extends UnitSpec with MockitoSugar {
     val output = model.computeOutput()
 
     assert(output.length === 3)
-    assertColourAndCount(output(0), Item.Red.toString, 47)
-    assertColourAndCount(output(1), Item.Blue.toString, 19)
-    assertColourAndCount(output(2), Item.Yellow.toString, 18)
+    TestUtils.assertColourAndCount(output(0), Item.Red.toString, 47)
+    TestUtils.assertColourAndCount(output(1), Item.Blue.toString, 19)
+    TestUtils.assertColourAndCount(output(2), Item.Yellow.toString, 18)
   }
 
   it should "sample items that do not exist" in {
@@ -66,25 +79,30 @@ class StickySamplingModelSpec extends UnitSpec with MockitoSugar {
     val t = (1.0 / error) * Math.log(1.0 / (frequency * probabilityOfFailure))
     println(s"The first $t elements will be sampled with rate 1, the next ${2*t} with probability 0.5 etc")
     //insert the first 120 items. The first 119 should be always selected (probability 1). The next 238 should be selected if unknown with prob 0.5
-    val stream = List.concat(create(50, Item.Red), create(50, Item.Blue), create(10, Item.Yellow), create(8, Item.Brown))
-    when(mockRng.getNextDouble()).thenReturn(0.3)
+    val stream = List.concat(
+      Utils.create(50, Item.Red),
+      Utils.create(50, Item.Blue),
+      Utils.create(10, Item.Yellow),
+      Utils.create(8, Item.Brown)
+    )
+    Mockito.when(mockRng.getNextDouble).thenReturn(0.3)
 
     val step1Model = model.process(stream.iterator)
-    assert(step1Model.getMap().isEmpty === false)
+    assert(step1Model.getMap.isEmpty === false)
 
     //insert a different item and don't pick it
     //this should also trigger a rate change and toin coss for each entry
-    when(mockRng.getNextDouble()).thenReturn(0.7)
-    val unknownItemStream = create(2, Item.Green)
+    Mockito.when(mockRng.getNextDouble).thenReturn(0.7)
+    val unknownItemStream = Utils.create(2, Item.Green)
     val unknownItemModel = step1Model.process(unknownItemStream.iterator)
 
-    assert(unknownItemModel.getMap().get(Item.Green.toString) === None)
+    assert(unknownItemModel.getMap.get(Item.Green.toString) === None)
 
     //as a result all frequencies should be empty now that the rate changed and that the toin coss is always negative
 
     val step2Output = unknownItemModel.computeOutput()
     assert(step2Output.isEmpty === true)
-    assert(unknownItemModel.getMap().isEmpty === true)
+    assert(unknownItemModel.getMap.isEmpty === true)
   }
 
 

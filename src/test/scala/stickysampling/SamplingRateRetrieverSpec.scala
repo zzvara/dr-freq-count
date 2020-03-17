@@ -5,7 +5,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import unitspec.UnitSpec
 
 class SamplingRateRetrieverSpec extends UnitSpec with MockitoSugar {
-
   "Sampling Rate Retriever" should "pick the correct rate" in {
     assert(SamplingRateRetriever.deriveSamplingRate(1, 20) === 1)
     assert(SamplingRateRetriever.deriveSamplingRate(5, 20) === 1)
@@ -21,5 +20,4 @@ class SamplingRateRetrieverSpec extends UnitSpec with MockitoSugar {
     assert(SamplingRateRetriever.deriveSamplingRate(141, 20) === 8)
     assert(SamplingRateRetriever.deriveSamplingRate(299, 20) === 8)
   }
-
 }
