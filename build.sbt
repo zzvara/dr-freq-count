@@ -4,18 +4,14 @@ organization := "hu.sztaki"
 
 version := "2.0"
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.11"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.1.1" % Test
 
-libraryDependencies += "org.mockito" % "mockito-core" % "2.0.28-beta"
+libraryDependencies += "org.scalatestplus" %% "scalatestplus-mockito" % "1.0.0-M2" % Test
 
 updateOptions := updateOptions.value.withGigahorse(false)
 
 publishConfiguration := publishConfiguration.value.withOverwrite(true)
 
-resolvers ++= Seq(
-  "Soft-props repository" at "http://dl.bintray.com/content/softprops/maven",
-  "Lightshed Maven repository" at "http://dl.bintray.com/content/lightshed/maven",
-  "Seasar" at "https://www.seasar.org/maven/maven2/"
-)
+resolvers ++= Seq("Maven Central" at "https://repo1.maven.org/maven2/")
