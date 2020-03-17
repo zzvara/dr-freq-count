@@ -1,7 +1,7 @@
 package stickysampling
 
 import frequencycount.stickysampling.SamplingRateRetriever
-import org.scalatest.mock.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import unitspec.UnitSpec
 
 class SamplingRateRetrieverSpec extends UnitSpec with MockitoSugar {

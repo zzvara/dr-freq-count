@@ -2,7 +2,7 @@ package stickysampling
 
 import frequencycount.Item
 import frequencycount.stickysampling.StickySamplingModel
-import org.scalatest.mock.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import testutils.TestUtils._
 import unitspec.UnitSpec
 import utils.RandomNumberGenerator
@@ -22,7 +22,7 @@ class StickySamplingModelSpec extends UnitSpec with MockitoSugar {
     val t = (1.0 / error) * Math.log(1.0 / (frequency * probabilityOfFailure))
 
     val incomingStream = List.concat(create(19, Item.Red), create(11, Item.Blue), create(10, Item.Yellow), create(10, Item.Brown), create(0, Item.Green))
-    val step0 = model.process(incomingStream)
+    val step0 = model.process(incomingStream.iterator)
 
 
     assert(step0.getMap().get(Item.Red.toString).get === 19)
@@ -45,7 +45,7 @@ class StickySamplingModelSpec extends UnitSpec with MockitoSugar {
     val stream = List.concat(create(47, Item.Red), create(19, Item.Blue), create(18, Item.Yellow), create(8, Item.Brown), create(0, Item.Green))
 
     val model = new StickySamplingModel[String](frequency, error, probabilityOfFailure)
-    model.process(stream)
+    model.process(stream.iterator)
 
     val output = model.computeOutput()
 
@@ -69,14 +69,14 @@ class StickySamplingModelSpec extends UnitSpec with MockitoSugar {
     val stream = List.concat(create(50, Item.Red), create(50, Item.Blue), create(10, Item.Yellow), create(8, Item.Brown))
     when(mockRng.getNextDouble()).thenReturn(0.3)
 
-    val step1Model = model.process(stream)
+    val step1Model = model.process(stream.iterator)
     assert(step1Model.getMap().isEmpty === false)
 
     //insert a different item and don't pick it
     //this should also trigger a rate change and toin coss for each entry
     when(mockRng.getNextDouble()).thenReturn(0.7)
     val unknownItemStream = create(2, Item.Green)
-    val unknownItemModel = step1Model.process(unknownItemStream)
+    val unknownItemModel = step1Model.process(unknownItemStream.iterator)
 
     assert(unknownItemModel.getMap().get(Item.Green.toString) === None)
 

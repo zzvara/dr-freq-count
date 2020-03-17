@@ -19,7 +19,7 @@ class LossyCountingModelSpec extends UnitSpec{
 
     val window0 = List.concat(create(19, Item.Red), create(11, Item.Blue), create(10, Item.Yellow), create(10, Item.Brown), create(0, Item.Green))
 
-    val step0 = lossyCounting.process(window0)
+    val step0 = lossyCounting.process(window0.iterator)
     val step0Output = step0.computeOutput()
 
     // red freq = 18/50 = 0.36
@@ -34,7 +34,7 @@ class LossyCountingModelSpec extends UnitSpec{
     assertColourAndCount(step0Output(3), Item.Brown.toString, 9)
 
     val window1 = List.concat(create(30, Item.Red), create(10, Item.Blue), create(10, Item.Yellow))
-    val step1 = lossyCounting.process(window1)
+    val step1 = lossyCounting.process(window1.iterator)
     val step1Output = step1.computeOutput()
 
     //red freq = 47 / 100
@@ -47,7 +47,7 @@ class LossyCountingModelSpec extends UnitSpec{
     assertColourAndCount(step1Output(2), Item.Yellow.toString, 18)
 
     val window2 = List.concat(create(30, Item.Red), create(10, Item.Blue), create(0, Item.Yellow), create(5, Item.Brown), create(5, Item.Green))
-    val step2 = lossyCounting.process(window2)
+    val step2 = lossyCounting.process(window2.iterator)
     val step2Output = step2.computeOutput()
 
     //red freq = 76 / 150 = 50%
@@ -60,7 +60,7 @@ class LossyCountingModelSpec extends UnitSpec{
     assertColourAndCount(step2Output(1), Item.Blue.toString, 28)
 
     val window3 = List.concat(create(40, Item.Red), create(10, Item.Blue))
-    val step3 = lossyCounting.process(window3)
+    val step3 = lossyCounting.process(window3.iterator)
     val step3Output = step3.computeOutput()
 
     //red freq = 115/200 = 57.5%
@@ -74,7 +74,7 @@ class LossyCountingModelSpec extends UnitSpec{
 
     val window4 = List.concat(create(40, Item.Red), create(10, Item.Blue))
 
-    val step4 = lossyCounting.process(window4)
+    val step4 = lossyCounting.process(window4.iterator)
     val step4Output = step4.computeOutput()
 
     //red freq = 154 / 250 = 61.6%
